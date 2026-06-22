@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora de IMC com WhatsApp</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#4facfe,#00f2fe);
+}
+
+.container{
+    background:#fff;
+    width:400px;
+    padding:30px;
+    border-radius:15px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.2);
+}
+
+h1{
+    text-align:center;
+    color:#333;
+    margin-bottom:20px;
+}
+
+.input-group{
+    margin-bottom:15px;
+}
+
+label{
+    display:block;
+    margin-bottom:5px;
+    font-weight:bold;
+    color:#555;
+}
+
+input{
+    width:100%;
+    padding:10px;
+    border:2px solid #ddd;
+    border-radius:8px;
+    font-size:16px;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    font-size:16px;
+    cursor:pointer;
+    color:white;
+    margin-top:10px;
+}
+
+.btn-calcular{
+    background:#2196F3;
+}
+
+.btn-calcular:hover{
+    background:#1976D2;
+}
+
+.btn-whatsapp{
+    background:#25D366;
+}
+
+.btn-whatsapp:hover{
+    background:#1EBE5D;
+}
+
+.resultado{
+    margin-top:20px;
+    padding:15px;
+    background:#f5f5f5;
+    border-radius:10px;
+    display:none;
+    text-align:center;
+}
+
+.valor-imc{
+    font-size:28px;
+    color:#2196F3;
+    font-weight:bold;
+    margin-top:10px;
+}
+
+.classificacao{
+    font-size:18px;
+    margin-top:10px;
+    font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Calculadora de IMC</h1>
+
+    <div class="input-group">
+        <label>Peso (kg)</label>
+        <input type="number" id="peso" placeholder="Ex: 70">
+    </div>
+
+    <div class="input-group">
+        <label>Altura (m)</label>
+        <input type="number" id="altura" step="0.01" placeholder="Ex: 1.75">
+    </div>
+
+    <div class="input-group">
+        <label>Número do WhatsApp</label>
+        <input type="text" id="telefone" placeholder="Ex: 5521999999999">
+    </div>
+
+    <button class="btn-calcular" onclick="calcularIMC()">
+        Calcular IMC
+    </button>
+
+    <button class="btn-whatsapp" onclick="enviarWhatsApp()">
+        Enviar Resultado para WhatsApp
+    </button>
+
+    <div class="resultado" id="resultado">
+        <p>Seu IMC é:</p>
+        <div class="valor-imc" id="valorIMC"></div>
+        <div class="classificacao" id="classificacao"></div>
+    </div>
+
+</div>
+
+<script>
+
+let mensagemWhatsApp = "";
+
+function calcularIMC(){
+
+    const peso = parseFloat(document.getElementById("peso").value);
+    const altura = parseFloat(document.getElementById("altura").value);
+
+    if(!peso || !altura){
+        alert("Preencha peso e altura.");
+        return;
+    }
+
+    const imc = peso / (altura * altura);
+
+    let classificacao = "";
+
+    if(imc < 18.5){
+        classificacao = "Abaixo do peso";
+    }else if(imc < 24.9){
+        classificacao = "Peso normal";
+    }else if(imc < 29.9){
+        classificacao = "Sobrepeso";
+    }else if(imc < 34.9){
+        classificacao = "Obesidade Grau I";
+    }else if(imc < 39.9){
+        classificacao = "Obesidade Grau II";
+    }else{
+        classificacao = "Obesidade Grau III";
+    }
+
+    document.getElementById("valorIMC").innerHTML = imc.toFixed(2);
+    document.getElementById("classificacao").innerHTML = classificacao;
+    document.getElementById("resultado").style.display = "block";
+
+    mensagemWhatsApp =
+`*Resultado do IMC*
+
+📌 Peso: ${peso} kg
+📌 Altura: ${altura} m
+📌 IMC: ${imc.toFixed(2)}
+📌 Classificação: ${classificacao}`;
+}
+
+function enviarWhatsApp(){
+
+    if(mensagemWhatsApp === ""){
+        alert("Calcule o IMC primeiro.");
+        return;
+    }
+
+    const telefone = document.getElementById("telefone").value.trim();
+
+    if(telefone === ""){
+        alert("Digite um número de WhatsApp.");
+        return;
+    }
+
+    const url =
+        `https://wa.me/${telefone}?text=${encodeURIComponent(mensagemWhatsApp)}`;
+
+    window.open(url, "_blank");
+}
+
+</script>
+
+</body>
+</html>
